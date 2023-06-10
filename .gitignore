@@ -1,0 +1,13 @@
+# .gitignore
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+env/
+
+# Jupyter Notebook
+.ipynb_checkpoints
