@@ -7,6 +7,7 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 from tensorflow import keras
+import seaborn as sns
 
 st.title('Oracle Function Simulation')
 
@@ -36,16 +37,20 @@ df = pd.DataFrame(data['prices'], columns=['time', 'price'])
 df['time'] = pd.to_datetime(df['time'], unit='ms')
 
 # Generate mock data for the oracle function and simulate the last 3 years
+ether_price_prev = df['price'].iloc[0]  # initial Ether price
+active_users_prev = 1000  # initial active users
+
 oracle_outputs = []
 variables = {'task_complexity': [], 'ether_price': [], 'active_users': [], 'solved_tasks': [], 'unsolved_tasks': [], 'user_kpis': [], 'service_level_agreements': []}
-for _ in range(len(df)):
+for i in range(len(df)):
     task_complexity = random.randint(1, 10)
-    active_users = random.randint(1, 10000)
-    solved_tasks = random.randint(1, 1000)
-    unsolved_tasks = random.randint(1, 1000)
-    user_kpis = random.uniform(0.1, 1)
-    service_level_agreements = random.uniform(0.1, 1)
-    ether_price = df.iloc[_]['price']
+    ether_price = df['price'].iloc[i]  # Ether price based on historical data
+    active_users = active_users_prev * random.uniform(0.9, 1.1)  
+    solved_tasks = int(active_users * (1 - np.exp(-i/365)) * 0.8)  # 80% of active users solve tasks
+    unsolved_tasks = active_users - solved_tasks  # Remaining users did not solve tasks
+    user_kpis = random.uniform(0.75, 1)
+    service_level_agreements = random.uniform(0.95, 0.99)
+
     oracle_outputs.append(oracle(task_complexity, ether_price, active_users, solved_tasks, unsolved_tasks, user_kpis, service_level_agreements))
     variables['task_complexity'].append(task_complexity)
     variables['ether_price'].append(ether_price)
@@ -55,9 +60,13 @@ for _ in range(len(df)):
     variables['user_kpis'].append(user_kpis)
     variables['service_level_agreements'].append(service_level_agreements)
 
+    active_users_prev = active_users
+
+
 # Convert variables and oracle outputs into a DataFrame
 df_variables = pd.DataFrame(variables)
 oracle_outputs = pd.DataFrame(oracle_outputs, columns=['oracle_output'])
+
 
 # Normalize variables and oracle outputs
 scaler_x = MinMaxScaler()
@@ -104,6 +113,23 @@ plt.plot(monthly_df['predicted_output'], m*monthly_df['predicted_output'] + b, c
 plt.xlabel('Predicted Output')
 plt.ylabel('Ether Price')
 st.pyplot(plt)
+
+
+df['task_complexity'] = df_variables['task_complexity'].values
+
+# Display a pairplot of the variables
+st.subheader('Pairplot of the Variables')
+df = pd.DataFrame(variables)  # create a DataFrame from the variables dictionary
+df['predicted_output'] = predictions 
+fig = sns.pairplot(df, hue='task_complexity')
+st.pyplot(fig)
+
+# Display a correlation matrix of the variables
+st.subheader('Correlation Matrix of the Variables')
+corr = df.corr()
+fig, ax = plt.subplots(figsize=(10,10))
+sns.heatmap(corr, annot=True, fmt=".2f", cmap='coolwarm', ax=ax)
+st.pyplot(fig)
 
 # Display tables showing average values of the variables over time
 st.subheader('Average Values of the Variables Over Time')
