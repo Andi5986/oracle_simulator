@@ -55,26 +55,53 @@ for _ in range(len(df)):
     variables['user_kpis'].append(user_kpis)
     variables['service_level_agreements'].append(service_level_agreements)
 
-# Convert oracle_outputs into DataFrame and add to the df DataFrame
-df['oracle_output'] = oracle_outputs
+# Convert variables and oracle outputs into a DataFrame
+df_variables = pd.DataFrame(variables)
+oracle_outputs = pd.DataFrame(oracle_outputs, columns=['oracle_output'])
+
+# Normalize variables and oracle outputs
+scaler_x = MinMaxScaler()
+scaler_y = MinMaxScaler()
+df_variables_scaled = pd.DataFrame(scaler_x.fit_transform(df_variables), columns=df_variables.columns)
+oracle_outputs_scaled = pd.DataFrame(scaler_y.fit_transform(oracle_outputs), columns=oracle_outputs.columns)
+
+# Split the data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(df_variables_scaled, oracle_outputs_scaled, test_size=0.2, random_state=42)
+
+# Build a neural network model
+model = keras.models.Sequential()
+model.add(keras.layers.Dense(128, activation='relu', input_dim=7))  # 7 input features
+model.add(keras.layers.Dense(64, activation='relu'))
+model.add(keras.layers.Dense(1))  # output layer: single continuous output
+
+model.compile(optimizer='adam', loss='mean_squared_error')
+
+history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=100, batch_size=32)
+
+# Predicting with the trained model
+predictions_scaled = model.predict(df_variables_scaled)
+predictions = scaler_y.inverse_transform(predictions_scaled)  # inverse scaling to get real-world predictions
+
+# Add the predicted outputs into the df DataFrame
+df['predicted_output'] = predictions
 
 # Set 'time' as the index
 df.set_index('time', inplace=True)
 
-# Resample the price and oracle output data to monthly data and calculate average price and oracle output for each month
+# Resample the price and predicted output data to monthly data and calculate average price and predicted output for each month
 monthly_df = df.resample('M').mean()
 
 # Display a line chart of the Oracle output and Ether price over time
 st.subheader('Oracle Output and Ether Price Over Time')
-st.line_chart(monthly_df[['oracle_output', 'price']])
+st.line_chart(monthly_df[['predicted_output', 'price']])
 
 # Display a scatter plot with linear relation between Oracle output and Ether price
-st.subheader('Oracle output vs Ether price')
+st.subheader('Predicted output vs Ether price')
 plt.figure(figsize=(8,6))
-plt.scatter(monthly_df['oracle_output'], monthly_df['price'])
-m, b = np.polyfit(monthly_df['oracle_output'], monthly_df['price'], 1)
-plt.plot(monthly_df['oracle_output'], m*monthly_df['oracle_output'] + b, color='red')
-plt.xlabel('Oracle Output')
+plt.scatter(monthly_df['predicted_output'], monthly_df['price'])
+m, b = np.polyfit(monthly_df['predicted_output'], monthly_df['price'], 1)
+plt.plot(monthly_df['predicted_output'], m*monthly_df['predicted_output'] + b, color='red')
+plt.xlabel('Predicted Output')
 plt.ylabel('Ether Price')
 st.pyplot(plt)
 
