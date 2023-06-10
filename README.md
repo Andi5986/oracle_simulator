@@ -1,57 +1,53 @@
 # Oracle Function Simulation
 
-This project is a Python script that simulates an oracle function. The function includes several parameters: task complexity, Ether price, the number of active users, the number of solved tasks, the number of unsolved tasks, user KPIs, and service level agreements.
+This project simulates an oracle function that calculates a reward based on various input variables. The oracle function is trained using a neural network model.
 
-## Setup
+## Installation
 
-1. Clone the repository
+1. Clone the repository:
 
-git clone https://github.com/Andi5986/oracle_simulator.git
+git clone https://github.com/your-username/oracle-function-simulation.git
 
-2. Navigate to the project directory
-
-cd oracle_simulator
-
-3. Create a virtual environment (optional, but recommended)
-
-python3 -m venv env
-
-4. Activate the virtual environment
-    - On Windows:
-    ```
-    .\env\Scripts\activate
-    ```
-    - On Unix or MacOS:
-    ```
-    source env/bin/activate
-    ```
-5. Install the dependencies
+2. Install the required dependencies:
 
 pip install -r requirements.txt
 
-## Usage
+## Running the Application
 
-To run the script, run through steamlit:
+3. Navigate to the project directory:
 
-streamlit run oracle.py
+cd oracle-function-simulation
 
+4. Launch the Streamlit application:
 
-The script fetches the historical price data for Ether and uses this data to generate and plot the output of the oracle function over time.
+streamlit run main.py
 
-## Built With
+5. Access the application in your web browser at [http://localhost:8501](http://localhost:8501).
 
-* [Streamlit](https://streamlit.io/) - The web framework used for visualizations
-* [Pandas](https://pandas.pydata.org/) - Data manipulation library
-* [Requests](https://requests.readthedocs.io/) - HTTP library for Python, used to fetch Ether price data
-* [Matplotlib](https://matplotlib.org/) - Visualization library
-* [Scikit-learn](https://scikit-learn.org/) - Machine Learning library, used for linear regression
+## Data Sources
 
-## Author
+The historical price data for Ether is obtained from the Coingecko API ([Coingecko](https://coingecko.com/)).
 
-* **Andi** - [Andi5986](https://github.com/Andi5986)
+## Contributing
+
+Contributions are welcome! If you would like to contribute to this project, please follow these steps:
+
+7. Fork the repository.
+
+8. Create a new branch:
+
+git checkout -b feature/new-feature
+
+9. Make your changes and commit them:
+
+git commit -m "Add new feature"
+
+10. Push your changes to your forked repository:
+
+git push origin feature/new-feature
+
+11. Open a pull request on the original repository.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
