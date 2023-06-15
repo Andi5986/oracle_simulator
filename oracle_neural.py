@@ -18,7 +18,7 @@ weights = [random.random() for _ in range(7)]
 def oracle(task_complexity, ether_price, active_users, solved_tasks, unsolved_tasks, user_kpis, service_level_agreements):
     return (
         weights[0] * task_complexity
-        + weights[1] * (-1) * ether_price
+        + weights[1] * (-1) * np.log(ether_price + 1)  # add 1 to avoid log(0)
         + weights[2] * active_users
         + weights[3] * solved_tasks
         + weights[4] * unsolved_tasks
@@ -62,11 +62,9 @@ for i in range(len(df)):
 
     active_users_prev = active_users
 
-
 # Convert variables and oracle outputs into a DataFrame
 df_variables = pd.DataFrame(variables)
 oracle_outputs = pd.DataFrame(oracle_outputs, columns=['oracle_output'])
-
 
 # Normalize variables and oracle outputs
 scaler_x = MinMaxScaler()
@@ -113,7 +111,6 @@ plt.plot(monthly_df['predicted_output'], m*monthly_df['predicted_output'] + b, c
 plt.xlabel('Predicted Output')
 plt.ylabel('Ether Price')
 st.pyplot(plt)
-
 
 df['task_complexity'] = df_variables['task_complexity'].values
 
