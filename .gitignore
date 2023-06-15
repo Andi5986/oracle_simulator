@@ -9,5 +9,8 @@ __pycache__/
 # Virtual environment
 env/
 
+#experiments
+experiments/
+
 # Jupyter Notebook
 .ipynb_checkpoints

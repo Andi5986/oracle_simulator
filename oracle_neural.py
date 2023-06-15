@@ -18,7 +18,7 @@ weights = [random.random() for _ in range(7)]
 def oracle(task_complexity, ether_price, active_users, solved_tasks, unsolved_tasks, user_kpis, service_level_agreements):
     return (
         weights[0] * task_complexity
-        + weights[1] * ether_price
+        + weights[1] * (-1) * ether_price
         + weights[2] * active_users
         + weights[3] * solved_tasks
         + weights[4] * unsolved_tasks
