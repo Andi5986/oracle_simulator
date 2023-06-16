@@ -8,6 +8,7 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 from tensorflow import keras
+from tensorflow.keras import regularizers
 import seaborn as sns
 
 st.title('Oracle Function Simulation')
@@ -95,15 +96,15 @@ X_train_reward, X_test_reward, y_train_reward, y_test_reward = train_test_split(
 
 # Build a neural network model
 model_oracle = keras.models.Sequential()
-model_oracle.add(keras.layers.Dense(128, activation='relu', input_dim=7))  # 7 input features
-model_oracle.add(keras.layers.Dense(64, activation='relu'))
-model_oracle.add(keras.layers.Dense(1))  # output layer: single continuous output
+model_oracle.add(keras.layers.Dense(128, activation='relu', input_dim=7, kernel_regularizer=regularizers.l1(0.01)))
+model_oracle.add(keras.layers.Dense(64, activation='relu', kernel_regularizer=regularizers.l1(0.01)))
+model_oracle.add(keras.layers.Dense(1, kernel_regularizer=regularizers.l1(0.01)))  # output layer: single continuous output
 model_oracle.compile(optimizer='adam', loss='mean_squared_error')
 
 model_reward = keras.models.Sequential()
-model_reward.add(keras.layers.Dense(128, activation='relu', input_dim=7))  # 7 input features
-model_reward.add(keras.layers.Dense(64, activation='relu'))
-model_reward.add(keras.layers.Dense(1))  # output layer: single continuous output
+model_reward.add(keras.layers.Dense(128, activation='relu', input_dim=7, kernel_regularizer=regularizers.l2(0.01)))
+model_reward.add(keras.layers.Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01)))
+model_reward.add(keras.layers.Dense(1, kernel_regularizer=regularizers.l2(0.01))) # output layer: single continuous output
 model_reward.compile(optimizer='adam', loss='mean_squared_error')
 
 history_oracle = model_oracle.fit(X_train_oracle, y_train_oracle, validation_data=(X_test_oracle, y_test_oracle), epochs=100, batch_size=32)
