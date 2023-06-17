@@ -1,18 +1,30 @@
-# Oracle Function Simulation
+# dApp Oracle Simulation
 
-This application simulates an Oracle Function. The Oracle Function calculates its output based on several variables:
-- **Task Complexity**: A measure of task difficulty, ranging from 1 to 10.
-- **Ether Price**: The price of Ether. A higher Ether price reduces the Oracle Function output.
-- **Active Users**: The number of active users. A higher number of active users reduces the Oracle Function output.
-- **Solved Tasks**: The number of tasks users solved. A higher number of solved tasks reduces the Oracle Function output.
-- **Unsolved Tasks**: The number of tasks users didn't solve. More unsolved tasks increase the Oracle Function output.
-- **User KPIs**: A measure of user performance. A higher value is better.
-- **Service Level Agreements (SLAs)**: A measure of the service level. A higher value is better.
+This is a Streamlit web application that simulates a dApp (decentralized application) oracle. The oracle predicts the value of ETH (Ether) based on various factors.
 
-The output of the Oracle Function is used to simulate outcomes over the past three years. The output is normalized and 
-utilized to train a neural network model, which predicts future outcomes.
+## Variables
 
-## Installation
+- **ETH** (dependent variable): The value of ETH, which is the target variable to predict.
+- **Task** (independent variable): Represents the number of tasks related to the dApp. It influences the value of ETH.
+- **Users** (mediating variable): Users are considered as a mediating variable that explains the relationship between Task and ETH. It can modify the relationship between them.
+- **Currency (Ether to USD)** (moderating variable): Represents the exchange rate between Ether and USD. It can interact with the relationship between Task and ETH, influencing the strength or direction of the relationship.
+
+## Models
+
+The following machine learning models are used for prediction:
+
+- **Neural Network**: A multilayer perceptron (MLP) model that captures complex relationships between variables.
+- **Support Vector Regressor (SVR)**: A machine learning algorithm designed to capture complex relationships between features and the target variable.
+- **Gradient Boosting Regressor**: An ensemble method that builds a sequence of weak learners to make accurate predictions.
+- **Ridge Regression**: A type of linear regression that includes a penalty on the size of coefficients to prevent overfitting.
+
+## Usage
+
+1. Select the size of the dataset (in days) using the sidebar slider.
+2. The application will simulate the data and train the models on the dataset.
+3. Time charts will be displayed, showing the evolution of the user base, tasks, Ether vs USD, and the predicted values of ETH from each model.
+
+Enjoy exploring the dApp Oracle Simulation!
 
 ## Installation
 
