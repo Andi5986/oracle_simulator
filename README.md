@@ -30,15 +30,17 @@ Enjoy exploring the dApp Oracle Simulation!
 
 1. Clone the repository:
 
-   ```
-   git clone https://github.com/your-username/oracle-function-simulation.git
-   ```
+```
+git clone https://github.com/your-username/oracle-function-simulation.git
+```
 
 2. Install the required dependencies:
 
 ```
 pip install -r requirements.txt
 ```
+
+possible issues with sklearn. See https://towardsdatascience.com/scikit-learn-vs-sklearn-6944b9dc1736#:~:text=scikit%2Dlearn%20and%20sklearn%20both,using%20the%20skikit%20%2Dlearn%20identifier
 
 ## Running the Application
 
@@ -51,7 +53,7 @@ cd oracle-function-simulation
 4. Launch the Streamlit application:
 
 ```
-streamlit run main.py
+streamlit run app.py
 ```
 
 5. Access the application in your web browser at [http://localhost:8501](http://localhost:8501).
