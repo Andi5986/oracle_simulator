@@ -1,9 +1,11 @@
 import streamlit as st
+import numpy as np
 from utils import simulate_dapp_oracle  # Import the function from utils.py
 from model_neural import create_and_train_model as create_and_train_model_nn
 from model_svr import create_and_train_model as create_and_train_model_svr
 from model_gb import create_and_train_model_gb
 from model_ridge import create_and_train_model_ridge
+
 
 
 def app():
@@ -22,10 +24,11 @@ def app():
         ('Ridge Regression', create_and_train_model_ridge)
     ]
 
+# Inside your app function in app.py
     for model_name, model_func in models:
         st.write(f'Training {model_name}...')
         model = model_func(df)
-        df[f'Predicted ETH ({model_name})'] = model.predict(df[['Tasks', 'User Base', 'Ether to USD']])
+        df[f'Predicted ETH ({model_name})'] = model.predict(df[['Tasks', 'User Base', 'Ether to USD', 'Ether Volatility']])
 
     # Display time charts
     st.subheader('Time Charts')
@@ -40,6 +43,9 @@ def app():
     # Evolution of ETH
     columns_to_chart = ['ETH'] + [f'Predicted ETH ({model_name})' for model_name, _ in models]
     st.line_chart(df.set_index('Date')[columns_to_chart])
+    
+    df['USD from ETH'] = np.log1p(df['ETH'] * df['Ether to USD'])
+    st.line_chart(df.set_index('Date')['USD from ETH'])
 
     st.sidebar.write('''
     **Variables:** ***ETH*** as the dependent variable, ***Task*** as the independent variable, 
