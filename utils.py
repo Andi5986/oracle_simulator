@@ -34,8 +34,8 @@ def generate_date_range(size):
 
 def calculate_eth(task, user_base, currency_relation, currency_volatility):
     hedge = 1 + currency_volatility  # Increase hedge when volatility increases
-    currency_relation = currency_relation  # Reversed relation since DAI is pegged to USD
-    eth = np.abs(currency_relation * hedge) * np.abs(task * user_base)
+    currency_relation = 1 / currency_relation  # Reversed relation since DAI is pegged to USD
+    eth = np.abs(currency_relation * hedge) * np.log1p(np.abs(task)/np.abs(user_base))
     eth = np.log1p(eth)  # apply a log transformation, adding 1 to avoid log(0)
     return eth
 

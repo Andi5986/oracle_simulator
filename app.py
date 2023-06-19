@@ -44,7 +44,7 @@ def app():
     columns_to_chart = ['ETH'] + [f'Predicted ETH ({model_name})' for model_name, _ in models]
     st.line_chart(df.set_index('Date')[columns_to_chart])
     
-    df['USD from ETH'] = np.log1p(df['ETH'] * df['Ether to USD'])
+    df['USD from ETH'] = (df['ETH'] * df['Ether to USD'])
     st.line_chart(df.set_index('Date')['USD from ETH'])
 
     st.sidebar.write('''
