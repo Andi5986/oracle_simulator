@@ -1,6 +1,5 @@
 # dApp Oracle Simulation
-
-This is a Streamlit web application that simulates a dApp (decentralized application) oracle. The oracle predicts the value of ETH (payment denominator in Ether) based on network effects for crowdsourcing agents engaged in solved network tasks. 
+This is a web application built with Streamlit that emulates a decentralized application (dApp) oracle. The oracle forecasts the value of ETH (the unit of payment in Ether) by considering network effects from crowdsourcing agents who are involved in completing network tasks. 
 
 $$
 ETH = \log \left(1 + \left| \frac{1}{C} \cdot (1 + V) \cdot \log \left(1 + \frac{|T|}{|U|} \right) \right| \right)
