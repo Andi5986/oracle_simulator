@@ -1,6 +1,6 @@
 # dApp Oracle Simulation
 
-This is a Streamlit web application that simulates a dApp (decentralized application) oracle. The oracle predicts the value of ETH (Ether) based on various factors.
+This is a Streamlit web application that simulates a dApp (decentralized application) oracle. The oracle predicts the value of ETH (payment denominator in Ether) based on network effects for crowdsourcing agents engaged in solved network tasks. 
 
 $$
 ETH = \log \left(1 + \left| \frac{1}{C} \cdot (1 + V) \cdot \log \left(1 + \frac{|T|}{|U|} \right) \right| \right)
@@ -43,7 +43,7 @@ Enjoy exploring the dApp Oracle Simulation!
 1. Clone the repository:
 
 ```
-git clone https://github.com/your-username/oracle-function-simulation.git
+git clone https://github.com/Andi5986/oracle_simulator.git
 ```
 
 2. Install the required dependencies:
