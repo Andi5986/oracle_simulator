@@ -2,6 +2,18 @@
 
 This is a Streamlit web application that simulates a dApp (decentralized application) oracle. The oracle predicts the value of ETH (Ether) based on various factors.
 
+$$
+ETH = \log \left(1 + \left| \frac{1}{C} \cdot (1 + V) \cdot \log \left(1 + \frac{|T|}{|U|} \right) \right| \right)
+$$
+
+- `ETH` is the calculated result.
+- `T` represents the `task`.
+- `U` represents the `user_base`.
+- `C` represents the `currency_relation`.
+- `V` represents the `currency_volatility`.
+- `log` is the natural logarithm function.
+- `|x|` denotes the absolute value of `x`.
+
 ## Variables
 
 - **ETH** (dependent variable): The value of ETH, which is the target variable to predict.
