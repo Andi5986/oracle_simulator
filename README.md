@@ -1,23 +1,25 @@
 # dApp Oracle Simulation
 This is a web application built with Streamlit that emulates a decentralized application (dApp) oracle. The oracle forecasts the value of ETH (the unit of payment in Ether) by considering network effects from crowdsourcing agents who are involved in completing network tasks. 
 
+## Underlying Calculation
+
+The core of this application is a function that calculates the amount of Ethereum (ETH) needed based on several parameters: `task`, `user_base`, `currency_relation`, and `currency_volatility`. The mathematical relationship between these variables is encapsulated in the following formula:
+
 $$
-ETH = \log \left(1 + \left| \frac{1}{C} \cdot (1 + V) \cdot \log \left(1 + \frac{|T|}{|U|} \right) \right| \right)
+ETH = \log \left(1 + \left| \frac{1}{C} \cdot (1 + V^2) \cdot \log \left(1 + \frac{|T|^2}{|U|^2} \right) \right| \right)
 $$
 
-- `ETH` is the calculated result.
-- `T` represents the `task`.
-- `U` represents the `user_base`.
-- `C` represents the `currency_relation`.
-- `V` represents the `currency_volatility`.
+Where:
+
+- `T` represents the `task`, indicating the workload of tasks.
+- `U` represents the `user_base`, a base value associated with the users in the network.
+- `C` represents the `currency_relation`, the exchange rate between Ethereum and USD.
+- `V` represents the `currency_volatility`, accounting for the volatility of the currency.
 - `log` is the natural logarithm function.
 - `|x|` denotes the absolute value of `x`.
 
-## Underlying Calculation
+This calculation forms the basis for the predictions made by the machine learning models in the application, which include a Neural Network, Support Vector Regressor (SVR), Gradient Boosting Regressor, and Ridge Regression.
 
-The core of this application is a function that calculates the amount of ETH needed based on several parameters: `task`, `user_base`, `currency_relation`, and `currency_volatility`.
-
-The function applies a logarithmic transformation to handle large values and reduce skewness, and it takes absolute values to ensure the function behaves the same way for positive and negative inputs. The function also accounts for currency volatility by increasing the hedge when volatility increases.
 
 ## Variables
 
