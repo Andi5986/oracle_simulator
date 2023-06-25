@@ -13,6 +13,12 @@ $$
 - `log` is the natural logarithm function.
 - `|x|` denotes the absolute value of `x`.
 
+## Underlying Calculation
+
+The core of this application is a function that calculates the amount of ETH needed based on several parameters: `task`, `user_base`, `currency_relation`, and `currency_volatility`.
+
+The function applies a logarithmic transformation to handle large values and reduce skewness, and it takes absolute values to ensure the function behaves the same way for positive and negative inputs. The function also accounts for currency volatility by increasing the hedge when volatility increases.
+
 ## Variables
 
 - **ETH** (dependent variable): The value of ETH, which is the target variable to predict.
