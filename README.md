@@ -1,5 +1,8 @@
 # dApp Oracle Simulation
-This is a web application built with Streamlit that emulates a decentralized application (dApp) oracle. The oracle forecasts the value of ETH (the unit of payment in Ether) by considering network effects from crowdsourcing agents who are involved in completing network tasks. 
+
+This is a web application built with Streamlit that emulates a decentralized application (dApp) oracle. A dApp is a decentralized application that runs on a blockchain network in a public, open-source, peer-to-peer environment. An oracle, in the context of blockchains and smart contracts, is an agent that finds and verifies real-world occurrences and submits this information to a blockchain to be used by smart contracts.
+
+The oracle in this application forecasts the value of ETH (the unit of payment in Ether) by considering network effects from crowdsourcing agents who are involved in completing network tasks. 
 
 ## Underlying Calculation
 
