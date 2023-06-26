@@ -32,11 +32,16 @@ def generate_date_range(size):
     start_date = datetime.now() - timedelta(days=size)
     return pd.date_range(start_date, periods=size).tolist()
 
-def calculate_eth(task, user_base, currency_relation, currency_volatility):
+def calculate_eth(task, user_base, currency_relation, currency_volatility, net_eth):
     hedge = 1 + currency_volatility**2  # Increase hedge when volatility increases
-    currency_relation = 1 / currency_relation  # Reversed relation since DAI is pegged to USD
+    currency_relation = 1 / currency_relation 
+    eth_limit = 15_000_000
+    scaling_factor = 1 - net_eth / eth_limit
+    scaling_factor = max(scaling_factor, 0)  # Ensure the scaling factor is not negative
+    task = task * scaling_factor
+    user_base = user_base * scaling_factor
     eth = np.abs(currency_relation * hedge) * np.log1p(np.abs(task**2)/np.abs(user_base**2))
-    eth = np.log1p(eth)  # apply a log transformation, adding 1 to avoid log(0)
+    eth = np.log1p(eth) 
     return eth
 
 
@@ -50,7 +55,17 @@ def simulate_dapp_oracle(size):
     user_base = pd.Series(generate_stochastic_user_growth(size), index=range(size))  # Convert to pandas Series with proper index
     ether_to_usd = pd.Series(fetch_ether_to_usd(size), index=range(size))  # Convert to pandas Series with proper index
     ether_volatility = calculate_volatility(ether_to_usd).fillna(0)
-    eth = calculate_eth(tasks, user_base, ether_to_usd, ether_volatility)
+    net_eth = 0
+    eth_values = []
+
+    for i in range(size):
+        eth = calculate_eth(tasks[i], user_base[i], ether_to_usd[i], ether_volatility[i], net_eth)
+        net_eth += eth
+        if i % 10 == 0:  # Example condition: Ether is bought back every 10 days
+            eth_bought_back = eth / 2  # Example: Half of the Ether calculated is bought back
+            net_eth -= eth_bought_back
+
+        eth_values.append(eth)
     return pd.DataFrame(
         {
             'Date': dates,
@@ -58,6 +73,6 @@ def simulate_dapp_oracle(size):
             'User Base': user_base,
             'Ether to USD': ether_to_usd,
             'Ether Volatility': ether_volatility,
-            'ETH': eth,
+            'ETH': eth_values,
         }
     )

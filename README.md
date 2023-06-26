@@ -6,20 +6,32 @@ This is a web application built with Streamlit that emulates a decentralized app
 The core of this application is a function that calculates the amount of Ethereum (ETH) needed based on several parameters: `task`, `user_base`, `currency_relation`, and `currency_volatility`. The mathematical relationship between these variables is encapsulated in the following formula:
 
 $$
-ETH = \log \left(1 + \left| \frac{1}{C} \cdot (1 + V^2) \cdot \log \left(1 + \frac{|T|^2}{|U|^2} \right) \right| \right)
+ETH = \log \left(1 + \left| \frac{1}{C} \cdot (1 + V^2) \cdot \log \left(1 + \frac{|T \cdot f(ETH)|^2}{|U \cdot f(ETH)|^2} \right) \right| \right)
 $$
 
 Where:
 
+- `ETH` is the amount of Ethereum calculated.
 - `T` represents the `task`, indicating the workload of tasks.
 - `U` represents the `user_base`, a base value associated with the users in the network.
 - `C` represents the `currency_relation`, the exchange rate between Ethereum and USD.
 - `V` represents the `currency_volatility`, accounting for the volatility of the currency.
 - `log` is the natural logarithm function.
 - `|x|` denotes the absolute value of `x`.
+- `f(ETH)` represents the scaling factor, calculated as:
+
+$$
+f(ETH) = 1 - \frac{ETH}{ETH_{limit}}
+$$
+
+Where:
+
+- `ETH` is the current net amount of Ether in the system.
+- `ETH_{limit}` is the limit of 15 million Ether.
+
+This scaling factor reduces from 1 to 0 as the net amount of Ether approaches the limit. It is applied to the `task` and `user_base` variables in the formula for `ETH`, reducing their impact on the calculated Ether as the limit is approached.
 
 This calculation forms the basis for the predictions made by the machine learning models in the application, which include a Neural Network, Support Vector Regressor (SVR), Gradient Boosting Regressor, and Ridge Regression.
-
 
 ## Variables
 
