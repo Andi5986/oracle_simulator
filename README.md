@@ -6,33 +6,49 @@ The oracle in this application forecasts the value of ETH (the unit of payment i
 
 ## Underlying Calculation
 
-The core of this application is a function that calculates the amount of Ethereum (ETH) needed based on several parameters: `task`, `user_base`, `currency_relation`, and `currency_volatility`. The mathematical relationship between these variables is encapsulated in the following formula:
+The core of this application is a function that calculates the scaling factor for Ethereum (sETH) based on several parameters: `task` (T), `user_base` (U), and `currency_relation` (C). The mathematical relationship between these variables is encapsulated in the following formula:
+
+## Scaling Function for Ethereum (ETH)
 
 $$
-ETH = \log \left(1 + \left| \frac{1}{C} \cdot (1 + V^2) \cdot \log \left(1 + \frac{|T \cdot f(ETH)|^2}{|U \cdot f(ETH)|^2} \right) \right| \right)
+sETH = \frac{1}{1 + \exp\left[-\log\left(\frac{1}{C^2} \cdot \frac{T^2}{U^2}\right)\right]}
 $$
 
-Where:
+Where the oracle function of ETH:
 
-- `ETH` is the amount of Ethereum calculated.
+$$
+oETH = \log\left(\frac{1}{C^2} \cdot \frac{T^2}{U^2} \right)
+$$
+
+is pluged into the sigmoid function:
+
+$$
+σ(x) = \frac{1}{1 + \exp(-oETH)}
+$$
+
+- `sETH` is the scalingg factor to be applied to Ether.
 - `T` represents the `task`, indicating the workload of tasks.
 - `U` represents the `user_base`, a base value associated with the users in the network.
 - `C` represents the `currency_relation`, the exchange rate between Ethereum and USD.
-- `V` represents the `currency_volatility`, accounting for the volatility of the currency.
 - `log` is the natural logarithm function.
 - `|x|` denotes the absolute value of `x`.
-- `f(ETH)` represents the scaling factor, calculated as:
+- `exp()` is the exponential function
 
-$$
-f(ETH) = 1 - \frac{ETH}{ETH_{limit}}
-$$
+The formula uses the sigmoid function to map potentially infinite input values into a finite range between 0 and 1. This is desirable in our case as we want sETH, the scaling factor for Ethereum, to be between 0 and 1.
+
+The sigmoid function, often denoted as `σ(x)`, is defined as follows:
+
+$$$
+σ(x) = \frac{1}{1 + \exp(-x)}
+$$$
 
 Where:
 
-- `ETH` is the current net amount of Ether in the system.
-- `ETH_{limit}` is the limit of 15 million Ether.
+- `σ(x)` is the output of the sigmoid function for input x
+- `exp()` is the exponential function
+- `x` is the input to the function
 
-This scaling factor reduces from 1 to 0 as the net amount of Ether approaches the limit. It is applied to the `task` and `user_base` variables in the formula for `ETH`, reducing their impact on the calculated Ether as the limit is approached.
+This scaling factor reduces from 1 to 0 as the network's task load is distributed among more users, or as the value of Ether increases with respect to the US Dollar. It can be applied to dynamically adjust the price a business should pay for labeling data, mitigating the impact of market volatility and network load.
 
 This calculation forms the basis for the predictions made by the machine learning models in the application, which include a Neural Network, Support Vector Regressor (SVR), Gradient Boosting Regressor, and Ridge Regression.
 
