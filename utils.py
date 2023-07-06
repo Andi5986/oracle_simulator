@@ -32,26 +32,29 @@ def generate_date_range(size):
     start_date = datetime.now() - timedelta(days=size)
     return pd.date_range(start_date, periods=size).tolist()
 
-def calculate_eth(task, user_base, currency_relation, currency_volatility):
-    hedge = 1 + currency_volatility**2  # Increase hedge when volatility increases
-    currency_relation = 1 / currency_relation 
-    eth = np.abs(currency_relation * hedge) * np.log1p(np.abs(task**2)/np.abs(user_base**2))
-    eth = np.log1p(eth) 
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def calculate_eth(task, user_base, currency_relation):
+    assert currency_relation != 0 and user_base != 0
+    currency_relation_inverse = 1 / currency_relation**2
+    eth = np.abs(currency_relation_inverse) * (np.abs(task)**2 / np.abs(user_base)**2) 
+    eth = sigmoid(np.log(eth))  # Use sigmoid function to keep the value within range [0,1]
     return eth
 
 def calculate_volatility(data, window=10):
     percent_change = data.pct_change()
     return percent_change.rolling(window).std()
 
-def calculate_scaling_factor(task, net_eth, eth_bought_back_condition):
+def calculate_limit_factor(task, net_eth, eth_bought_back_condition):
     eth_limit = 15_000_000 * task  # Multiply the limit by the number of tasks
-    scaling_factor = 1 - net_eth / eth_limit
-    scaling_factor = max(scaling_factor, 0)  # Ensure the scaling factor is not negative
-    net_eth += task * scaling_factor
+    limit_factor = 1 - net_eth / eth_limit
+    limit_factor = max(limit_factor, 0)  # Ensure the limit factor is not negative
+    net_eth += task * limit_factor
     if eth_bought_back_condition:  # If the condition for buying back Ether is met
-        eth_bought_back = task * scaling_factor / 2  # Example: Half of the Ether calculated is bought back
+        eth_bought_back = task * limit_factor / 2  # Example: Half of the Ether calculated is bought back
         net_eth -= eth_bought_back
-    return scaling_factor, net_eth
+    return limit_factor, net_eth
 
 def simulate_dapp_oracle(size):
     dates = generate_date_range(size)
@@ -63,10 +66,10 @@ def simulate_dapp_oracle(size):
     eth_values = []
 
     for i in range(size):
-        scaling_factor, net_eth = calculate_scaling_factor(tasks[i], net_eth, i % 10 == 0)
-        task = tasks[i] * scaling_factor
-        user_base = user_base_series[i] * scaling_factor
-        eth = calculate_eth(task, user_base, ether_to_usd[i], ether_volatility[i])
+        limit_factor, net_eth = calculate_limit_factor(tasks[i], net_eth, i % 10 == 0)
+        task = tasks[i] * limit_factor
+        user_base = user_base_series[i] * limit_factor
+        eth = calculate_eth(task, user_base, ether_to_usd[i])
         eth_values.append(eth)
 
     return pd.DataFrame(
@@ -79,3 +82,4 @@ def simulate_dapp_oracle(size):
             'ETH': eth_values,
         }
     )
+

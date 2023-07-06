@@ -41,11 +41,11 @@ def app():
     st.line_chart(df.set_index('Date')['Ether to USD'])
 
     # Evolution of ETH
-    columns_to_chart = ['ETH'] + [f'Predicted ETH ({model_name})' for model_name, _ in models]
-    st.line_chart(df.set_index('Date')[columns_to_chart])
+    #columns_to_chart = ['ETH'] + [f'Predicted ETH ({model_name})' for model_name, _ in models]
+    #st.line_chart(df.set_index('Date')[columns_to_chart])
     
-    df['USD from ETH'] = (df['ETH'] * df['Ether to USD'])
-    st.line_chart(df.set_index('Date')['USD from ETH'])
+    df['ETH Scale Factor'] = (df['ETH'] * 1)
+    st.line_chart(df.set_index('Date')['ETH Scale Factor'])
 
     st.sidebar.write('''
     **Variables:** ***ETH*** as the dependent variable, ***Task*** as the independent variable, 
